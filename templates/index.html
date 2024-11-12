@@ -1,0 +1,63 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Co-Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PDF Co-Viewer</h1>
+            <div class="session-info">
+                <span id="connection-status">⚪ Connecting...</span>
+                <span id="user-count">Users: 0</span>
+                <span id="role-indicator">Role: Loading...</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="upload-section" id="upload-section">
+                <label for="pdf-upload" class="file-upload-label">
+                    Choose PDF
+                </label>
+                <input type="file" id="pdf-upload" accept=".pdf">
+                <div id="share-url-section" class="hidden">
+                    <input type="text" id="share-url" readonly>
+                    <button onclick="copyShareUrl()">Copy Link</button>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button id="prev-page" disabled>Previous</button>
+                <span id="page-info">Page 1 of 1</span>
+                <button id="next-page" disabled>Next</button>
+            </div>
+            
+            <div class="zoom-controls">
+                <button onclick="changeZoom(-0.25)">Zoom Out</button>
+                <span id="zoom-level">100%</span>
+                <button onclick="changeZoom(0.25)">Zoom In</button>
+            </div>
+        </div>
+
+        <div class="viewer-container">
+            <canvas id="pdf-viewer"></canvas>
+        </div>
+
+        <div class="status-bar">
+            <div id="loading-indicator" class="hidden">Loading...</div>
+            <div id="error-message" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // Pass session information to JavaScript
+        const SESSION_ID = "{{ session_id }}";
+        const IS_ADMIN = {{ 'true' if is_admin else 'false' }};
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
