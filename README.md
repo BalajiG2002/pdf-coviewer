@@ -55,6 +55,8 @@ source venv/bin/activate
 ```bash
 pip install flask flask-socketio PyPDF2
 ```
+Video:
+
 
 ## 🏃‍♂️ Running the Application
 
