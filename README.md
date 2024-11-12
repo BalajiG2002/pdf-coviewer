@@ -23,6 +23,8 @@
   - PDF.js
   - Vanilla JavaScript
   - Modern CSS
+Demo:
+https://github.com/user-attachments/assets/2594f410-68c0-495a-a71f-41e5ed96e8cc
 
 ## 📋 Prerequisites
 
@@ -55,7 +57,7 @@ source venv/bin/activate
 ```bash
 pip install flask flask-socketio PyPDF2
 ```
-Video:
+
 
 
 ## 🏃‍♂️ Running the Application
