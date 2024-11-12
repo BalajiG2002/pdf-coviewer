@@ -23,8 +23,9 @@
   - PDF.js
   - Vanilla JavaScript
   - Modern CSS
-Demo:
-https://github.com/user-attachments/assets/2594f410-68c0-495a-a71f-41e5ed96e8cc
+Upload video of application 
+
+https://github.com/user-attachments/assets/6733531b-4f21-402d-a84a-ac9194118593
 
 ## 📋 Prerequisites
 
@@ -37,7 +38,7 @@ Before you begin, ensure you have met the following requirements:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/pdf-co-viewer.git
+git clone https://github.com/BalajiG2002/pdf-co-viewer.git
 cd pdf-co-viewer
 ```
 
