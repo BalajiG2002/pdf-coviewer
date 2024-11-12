@@ -1,89 +1,138 @@
-# 📄 PDF Co-Viewer App 🚀
+# 📚 PDF Co-Viewer
 
-Welcome to the **PDF Co-Viewer App**! This web application allows multiple users to view and navigate through a PDF file simultaneously. The app is built using **Python**, **WebSockets**, **HTML**, **CSS**, and **JavaScript** for real-time synchronization of page movements. The app is designed for presenters and viewers in a collaborative setting where an admin can control the PDF's page display, while viewers see the same content in real-time.
+> A real-time collaborative PDF viewer built with Flask and Socket.IO
 
-## Features ✨
+## ✨ Features
 
-- 📑 **Real-Time PDF Viewing**: Upload a PDF and allow multiple users to view it in sync.
-- 🔄 **Page Synchronization**: When the admin moves the PDF page, all viewers see the same page.
-- 👥 **Multiple Viewers**: Viewers can access the PDF using a shared link and follow along as the admin controls the presentation.
-- 🖥️ **Admin Controls**: Admin users can control the PDF page movements (next/previous page).
-- 🔒 **Session-Based**: Each session is unique, and only authorized users can control the PDF page movements.
-- 👀 **Minimal UI**: Simple, user-friendly interface for both admins and viewers.
+- 🔄 Real-time PDF synchronization
+- 👥 Multi-user support with presenter/viewer roles
+- 🔍 Zoom controls for better readability
+- 🔗 Shareable session links
+- 📱 Responsive design
+- 🎯 Simple and intuitive interface
 
-## 💻 Technologies Used
+## 🚀 Tech Stack
 
-- **Python**: Backend logic, including PDF handling and WebSocket integration.
-- **WebSockets**: Real-time communication for page synchronization and session management.
-- **pdf.js**: Rendering PDF pages in the browser.
-- **HTML/CSS/JavaScript**: Front-end interface and interactivity.
+- **Backend:**
+  - Flask
+  - Flask-SocketIO
+  - PyPDF2
 
-## 🚀 Getting Started
+- **Frontend:**
+  - Socket.IO Client
+  - PDF.js
+  - Vanilla JavaScript
+  - Modern CSS
 
-Follow the steps below to set up and run the PDF Co-Viewer app locally.
+## 📋 Prerequisites
 
-### Prerequisites 📦
+Before you begin, ensure you have met the following requirements:
+- Python 3.x
+- Modern web browser with WebSocket support
+- pip (Python package manager)
 
-1. **Python 3.x**: Ensure you have Python 3 installed. You can download it from [here](https://www.python.org/downloads/).
-2. **WebSocket Library**: Install the WebSocket library for Python.
-    ```bash
-    pip install python-socketio
-    ```
-3. **pdf.js**: Used for rendering PDFs on the client-side.
+## ⚙️ Installation
 
-### Installation Steps 🛠️
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/pdf-co-viewer.git
+cd pdf-co-viewer
+```
 
-1. Clone the repository to your local machine:
-    ```bash
-    git clone https://github.com/yourusername/pdf-coviewer.git
-    cd pdf-coviewer
-    ```
+2. Create and activate a virtual environment:
+```bash
+# Create virtual environment
+python -m venv venv
 
-2. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
 
-3. Run the app:
-    ```bash
-    python app.py
-    ```
+3. Install required packages:
+```bash
+pip install flask flask-socketio PyPDF2
+```
 
-4. Open the URL provided by the terminal (usually `http://localhost:5000`) in your browser.
+## 🏃‍♂️ Running the Application
 
-### Usage 📝
+1. Start the server:
+```bash
+python app.py
+```
 
-1. **As an Admin**:
-    - Upload a PDF file and share the session link with others.
-    - Use the **Next** and **Previous** buttons to navigate through the PDF. The page will synchronize for all connected viewers.
+2. Open your browser and navigate to:
+```
+http://localhost:5000
+```
 
-2. **As a Viewer**:
-    - Click the session link shared by the admin.
-    - Follow along as the admin changes the pages in the PDF.
+## 📖 How to Use
 
-### Screenshots 📸
+1. **As a Presenter:**
+   - Visit the home page
+   - Upload a PDF file
+   - Share the generated URL with viewers
+   - Navigate through pages using controls
+   - Adjust zoom level as needed
 
-![PDF Co-Viewer](images/screenshot.png)
+2. **As a Viewer:**
+   - Click the shared session URL
+   - View the PDF in sync with the presenter
+   - Adjust zoom level independently
 
-## 👨‍💻 Contributing
+## 🔧 Project Structure
+```
+pdf-co-viewer/
+├── app.py              # Main Flask application
+├── static/
+│   ├── script.js      # Frontend JavaScript
+│   └── style.css      # Styling
+├── templates/
+│   └── index.html     # Main template
+└── uploads/           # PDF storage (auto-created)
+```
 
-We welcome contributions! If you'd like to improve the app or fix bugs, feel free to fork the repo and submit a pull request. Please make sure to follow the code style and write tests for any new features.
+## 💡 Key Features Explained
 
-### Steps to Contribute:
-1. Fork the repo.
-2. Clone your fork locally.
-3. Create a new branch for your changes.
-4. Commit your changes and push to your fork.
-5. Create a pull request to merge your changes into the main repo.
+- **Real-time Synchronization:** Using Socket.IO for instant page changes
+- **Role Management:** Automatic presenter/viewer role assignment
+- **Session Management:** Unique session IDs for each presentation
+- **Responsive Design:** Works on various screen sizes
+- **Error Handling:** Robust error messages and loading states
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch:
+```bash
+git checkout -b feature/AmazingFeature
+```
+3. Commit your changes:
+```bash
+git commit -m '✨ Add some amazing feature'
+```
+4. Push to the branch:
+```bash
+git push origin feature/AmazingFeature
+```
+5. Open a Pull Request
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Contact
+## 👏 Acknowledgments
 
-For any queries or feedback, feel free to open an issue or reach out at [adithya8112002@gmail.com].
+- PDF.js for PDF rendering
+- Socket.IO for real-time communication
+- Flask community for the amazing framework
+
+## 📫 Contact
+
+adithya8112002@gmail.com
 
 ---
 
-Happy PDF Viewing! 🎉
+⭐️ Star this repo if you find it helpful!
