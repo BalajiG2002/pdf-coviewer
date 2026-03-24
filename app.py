@@ -6,14 +6,23 @@ import os
 import PyPDF2
 import uuid
 import json
+from utils.validators import validate_pdf_upload
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max file size
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Store sessions and their states
 sessions = {}
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    """Handle file too large error"""
+    return jsonify({
+        'error': 'File too large. Maximum allowed size is 50MB.'
+    }), 413
 
 def create_session():
     session_id = str(uuid.uuid4())
@@ -42,36 +51,47 @@ def join_session(session_id):
 def upload_pdf():
     if 'pdf' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
-    
+
     file = request.files['pdf']
     session_id = request.form.get('session_id')
-    
+
     if not session_id or session_id not in sessions:
         return jsonify({'error': 'Invalid session'}), 400
-    
+
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
-    
-    if file and file.filename.endswith('.pdf'):
-        filename = secure_filename(f"{session_id}_{file.filename}")
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    # Validate PDF upload using our validation utilities
+    is_valid, error_message = validate_pdf_upload(file)
+    if not is_valid:
+        return jsonify({'error': error_message}), 400
+
+    # File is valid, proceed with upload
+    filename = secure_filename(f"{session_id}_{file.filename}")
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    try:
         file.save(filepath)
-        
+
+        # Verify it's a valid PDF that PyPDF2 can read
         with open(filepath, 'rb') as pdf_file:
             pdf_reader = PyPDF2.PdfReader(pdf_file)
             total_pages = len(pdf_reader.pages)
-        
+
         sessions[session_id]['pdf_path'] = filepath
         sessions[session_id]['total_pages'] = total_pages
         sessions[session_id]['current_page'] = 1
-        
+
         return jsonify({
             'success': True,
             'total_pages': total_pages,
             'session_url': url_for('join_session', session_id=session_id, _external=True)
         })
-    
-    return jsonify({'error': 'Invalid file type'}), 400
+    except Exception as e:
+        # Clean up file if processing failed
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        return jsonify({'error': f'Failed to process PDF: {str(e)}'}), 400
 
 @app.route('/pdf/<session_id>')
 def get_pdf(session_id):
