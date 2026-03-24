@@ -1,3 +1,6 @@
 Flask
 Flask-SocketIO
 PyPDF2
+flask-wtf
+pytest
+pytest-flask

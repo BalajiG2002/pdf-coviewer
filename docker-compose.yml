@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Persist uploaded PDFs across container restarts
+      - ./uploads:/app/uploads
+    environment:
+      - FLASK_ENV=development
+      # Override with a strong random value in production:
+      - SECRET_KEY=dev-only-change-me-in-production
