@@ -10,6 +10,7 @@
 - 🔗 Shareable session links
 - 📱 Responsive design
 - 🎯 Simple and intuitive interface
+- 🔒 Secure file validation with size limits and content checks
 
 ## 🚀 Tech Stack
 
@@ -96,8 +97,36 @@ pdf-co-viewer/
 │   └── style.css      # Styling
 ├── templates/
 │   └── index.html     # Main template
+├── utils/
+│   ├── __init__.py    # Package init
+│   └── validators.py  # File validation utilities
 └── uploads/           # PDF storage (auto-created)
 ```
+
+## 🔒 Security & Validation
+
+The following validation checks are performed on every PDF upload:
+
+- **File size limit**: Uploads are rejected if the file exceeds **50 MB**. Flask's `MAX_CONTENT_LENGTH` enforces this at the server level and returns a clear 413 error.
+- **PDF magic bytes check**: The first 5 bytes of each file are read and compared against the PDF signature (`%PDF-`). Non-PDF files are rejected with an informative error message.
+- **Filename sanitization**: All uploaded filenames are sanitized using `werkzeug.utils.secure_filename` to prevent path traversal and other filename-based attacks.
+- **Extension validation**: Only files with a `.pdf` extension are accepted.
+
+These checks are implemented in `utils/validators.py` and called from the `/upload` route in `app.py`.
+
+## 📝 Recent Changes
+
+### File Validation & Size Limits (Security Hardening)
+
+- Added `utils/validators.py` with reusable validation helpers:
+  - `validate_file_size()` — rejects empty files and files over 50 MB
+  - `validate_pdf_content()` — checks PDF magic bytes (`b'%PDF-'`)
+  - `validate_filename()` — sanitizes filename and enforces `.pdf` extension
+  - `validate_pdf_upload()` — orchestrates all checks and returns `(is_valid, error_message)`
+- Updated `app.py`:
+  - Added `MAX_CONTENT_LENGTH = 50 * 1024 * 1024` (50 MB)
+  - Added `@app.errorhandler(413)` to return a JSON error for oversized requests
+  - Integrated `validate_pdf_upload()` into the `/upload` route before saving the file
 
 ## 💡 Key Features Explained
 
