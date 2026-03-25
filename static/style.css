@@ -111,6 +111,33 @@ input[type="file"] {
     gap: 1rem;
 }
 
+.page-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-jump {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.page-jump input {
+    display: block;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    width: 100px;
+}
+
+.page-jump input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
 button {
     background-color: var(--primary-color);
     color: white;
