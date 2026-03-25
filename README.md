@@ -99,6 +99,7 @@ pdf-co-viewer/
 │   └── index.html     # Main template
 ├── utils/
 │   ├── __init__.py    # Package init
+│   ├── session_manager.py  # Session/session-user state management
 │   └── validators.py  # File validation utilities
 └── uploads/           # PDF storage (auto-created)
 ```
