@@ -31,9 +31,15 @@
             </div>
             
             <div class="navigation">
-                <button id="prev-page" disabled>Previous</button>
-                <span id="page-info">Page 1 of 1</span>
-                <button id="next-page" disabled>Next</button>
+                <button id="prev-page" disabled>← Previous</button>
+                <div class="page-navigation">
+                    <span id="page-info">Page 1 of 1</span>
+                    <div class="page-jump">
+                        <input type="number" id="page-input" placeholder="Go to page" min="1" max="1">
+                        <button id="jump-button" onclick="jumpToPage()">Go</button>
+                    </div>
+                </div>
+                <button id="next-page" disabled>Next →</button>
             </div>
             
             <div class="zoom-controls">
