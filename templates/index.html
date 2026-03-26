@@ -1,61 +1,133 @@
 <!-- templates/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Co-Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>PDF Co-Viewer</h1>
-            <div class="session-info">
-                <span id="connection-status">⚪ Connecting...</span>
-                <span id="user-count">Users: 0</span>
-                <span id="role-indicator">Role: Loading...</span>
-            </div>
-        </div>
+    <!-- Toast notification container -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-        <div class="controls">
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner-wrap">
+            <div class="spinner"></div>
+            <p id="loading-overlay-text">Loading…</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>PDF Co-Viewer</h1>
+                    <p class="brand-tagline">Real-time collaborative PDF viewing</p>
+                </div>
+            </div>
+            <div class="session-info">
+                <span class="badge" id="connection-status">
+                    <i class="fa-solid fa-circle status-dot"></i>
+                    Connecting…
+                </span>
+                <span class="badge" id="user-count">
+                    <i class="fa-solid fa-users"></i>
+                    <span>0 users</span>
+                </span>
+                <span class="badge badge-role" id="role-indicator">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Loading…</span>
+                </span>
+            </div>
+        </header>
+
+        <!-- Controls toolbar -->
+        <div class="controls" id="controls-bar">
+            <!-- Upload / share -->
             <div class="upload-section" id="upload-section">
-                <label for="pdf-upload" class="file-upload-label">
-                    Choose PDF
+                <label for="pdf-upload" class="btn btn-primary" id="upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    Upload PDF
                 </label>
                 <input type="file" id="pdf-upload" accept=".pdf">
-                <div id="share-url-section" class="hidden">
-                    <input type="text" id="share-url" readonly>
-                    <button onclick="copyShareUrl()">Copy Link</button>
+                <div id="share-url-section" class="hidden share-row">
+                    <i class="fa-solid fa-link share-icon"></i>
+                    <input type="text" id="share-url" readonly title="Share this link with viewers">
+                    <button class="btn btn-outline icon-btn" onclick="copyShareUrl()" title="Copy link">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copy</span>
+                    </button>
                 </div>
             </div>
-            
+
+            <!-- Page navigation -->
             <div class="navigation">
-                <button id="prev-page" disabled>← Previous</button>
+                <button id="prev-page" class="btn btn-icon" disabled title="Previous page (←)">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
                 <div class="page-navigation">
-                    <span id="page-info">Page 1 of 1</span>
+                    <span id="page-info" class="page-badge">Page 1 of 1</span>
                     <div class="page-jump">
-                        <input type="number" id="page-input" placeholder="Go to page" min="1" max="1">
-                        <button id="jump-button" onclick="jumpToPage()">Go</button>
+                        <input type="number" id="page-input" placeholder="Go to…" min="1" max="1" title="Jump to page">
+                        <button id="jump-button" class="btn btn-sm" onclick="jumpToPage()">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
-                <button id="next-page" disabled>Next →</button>
+                <button id="next-page" class="btn btn-icon" disabled title="Next page (→)">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
-            
+
+            <!-- Zoom controls -->
             <div class="zoom-controls">
-                <button onclick="changeZoom(-0.25)">Zoom Out</button>
-                <span id="zoom-level">100%</span>
-                <button onclick="changeZoom(0.25)">Zoom In</button>
+                <button class="btn btn-icon" onclick="changeZoom(-0.25)" title="Zoom out">
+                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                </button>
+                <span id="zoom-level" class="zoom-badge">–</span>
+                <button class="btn btn-icon" onclick="changeZoom(0.25)" title="Zoom in">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </button>
             </div>
         </div>
 
-        <div class="viewer-container">
-            <canvas id="pdf-viewer"></canvas>
+        <!-- Drag-and-drop upload zone (admin only, visible before PDF is loaded) -->
+        <div id="drop-zone" class="drop-zone hidden">
+            <div class="drop-zone-content">
+                <i class="fa-solid fa-file-arrow-up drop-icon"></i>
+                <p class="drop-primary">Drag &amp; drop a PDF here</p>
+                <p class="drop-secondary">or use the <strong>Upload PDF</strong> button above</p>
+            </div>
         </div>
 
-        <div class="status-bar">
-            <div id="loading-indicator" class="hidden">Loading...</div>
-            <div id="error-message" class="hidden"></div>
+        <!-- PDF viewer -->
+        <div class="viewer-container" id="viewer-container">
+            <div id="empty-state" class="empty-state">
+                <i class="fa-regular fa-file-pdf empty-icon"></i>
+                <p class="empty-title">No PDF loaded</p>
+                <p class="empty-subtitle" id="empty-hint">
+                    Upload a PDF using the button above to get started.
+                </p>
+            </div>
+            <canvas id="pdf-viewer" class="hidden"></canvas>
+        </div>
+
+        <!-- Keyboard shortcut hint (shown only for presenters via JS) -->
+        <div class="shortcuts-hint hidden" id="shortcuts-hint">
+            <i class="fa-solid fa-keyboard"></i>
+            Use <kbd>←</kbd> / <kbd>→</kbd> or <kbd>Space</kbd> to navigate pages
         </div>
     </div>
 
